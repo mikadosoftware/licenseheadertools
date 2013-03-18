@@ -1,3 +1,6 @@
+:docurl: http://license-header-tool.readthedocs.org
+:desc: Ensure all files hold correct license header
+
 ===================
 License Header Tool
 ===================
@@ -24,3 +27,5 @@ yourself.
 I also intend to devlop it as a plugin for flake8
 
 
+python fileheadermaker.py --conf=conf.ini --fldr=/home/pbrian/src/public/Connexions/rhaptos2.repo/rhaptos2/repo
+python fileheadermaker.py --conf=conf.ini --fldr=/home/pbrian/src/public/Connexions/rhaptos2.repo/rhaptos2/repo
