@@ -2,10 +2,10 @@
 #! -*- coding: utf-8 -*-
 
 ###
-# Copyright (c) Rice University 2012
+# Copyright (c) Rice University 2012-13
 # This software is subject to
-# the provisions of the GNU Lesser General
-# Public License Version 2.1 (LGPL).
+# the provisions of the GNU Affero General
+# Public License version 3 (AGPLv3).
 # See LICENCE.txt for details.
 ###
 
@@ -59,83 +59,15 @@ import shutil
 import sys
 import os
 
+## I was playing with imp and importing a redcipie provided on command line but it is
+## awful with doctests and frankly a lot of effort.
+## So, just change the name of file in this dir
+import headers_rice as CurrentRecipie
+
+
 class LicenseToolError(Exception):
     pass
-
-
-pytmpl = """#!/usr/bin/env python
-#! -*- coding: utf-8 -*-
-
-###
-# Copyright (c) Rice University 2012
-# This software is subject to
-# the provisions of the GNU Lesser General
-# Public License Version 2.1 (LGPL).
-# See LICENCE.txt for details.
-###
-
-
-"""
-
-jstmpl = """
-// <!--
-// Copyright (c) Rice University 2012
-// This software is subject to
-// the provisions of the GNU Lesser General
-// Public License Version 2.1 (LGPL).
-// See LICENCE.txt for details.
-// -->
-
-
-"""
-
-rsttmpl = """
-.. Copyright (c) Rice University 2012
-.. This software is subject to
-.. the provisions of the GNU Lesser General
-.. Public License Version 2.1 (LGPL).
-.. See LICENCE.txt for details.
-
-
-"""
-
-
-
-javatmpl = """
-//
-// Copyright (c) Mark Matten (mark_matten@hotmail.com) 2011-13
-// Part of the dbfit-teradata software.
-// This software is subject to the provisions of
-// the GNU General Public License Version 2.0 (GPL).
-// See LICENCE.txt for details.
-//
-
-
-"""
-
-coffeetmpl = """
-//
-// Copyright (c) Mark Matten (mark_matten@hotmail.com) 2011-13
-// Part of the dbfit-teradata software.
-// This software is subject to the provisions of
-// the GNU General Public License Version 2.0 (GPL).
-// See LICENCE.txt for details.
-//
-
-
-"""
-
-
-################ CONSTANTS
-
-SUFFIX_MAP = {
-    '.py': (pytmpl, ["#",]),
-    '.js': (jstmpl, ['//',]),
-    '.rst': (rsttmpl, ['..',]),
-    '.java': (javatmpl, ['//',]),
-    '.coffee': (coffeetmpl, ['#','//'],)
-}
-
+  
 def extract_hdr(txt, ext):
     """Given a file return the hdr and body components
 
@@ -169,7 +101,8 @@ def lineishdr(l, ext):
     issue: sometimes we have lines of comment that are comment only because previous line is
            this block style is parseable, but I dont want to wonder off course too much.
            For the moment only line by line comments are considered headers.
-                
+
+
     >>> lineishdr("#!/usr/local/bin/python", ".py")
     True
 
@@ -195,7 +128,7 @@ def lineishdr(l, ext):
 
     """
     try:
-        tmpl, commentsymbols = SUFFIX_MAP[ext]
+        tmpl, commentsymbols = CurrentRecipie.SUFFIX_MAP[ext]
     except Exception, e:
         raise LicenseToolError(str(e))
     
@@ -221,7 +154,7 @@ def adjust_one_file(f, confd):
     """
     tmpf = '/tmp/fooblah.txt'  ###awful replace!
     ext = os.path.splitext(f)[1]
-    tmpl = SUFFIX_MAP[ext][0]
+    tmpl = CurrentRecipie.SUFFIX_MAP[ext][0]
     tmpfo = open(tmpf, 'w')
 
     hdr, body = extract_hdr(open(f).read(), ext)
@@ -277,10 +210,6 @@ def analyse_file(f, confd):
              'HEADER_OUTOFDATE': False,
          }
     currext = os.path.splitext(f)[-1:][0]
-    simplelog("%s %s %s" % (currext, confd['app']['validexts'],
-                        ext_in_list(currext, confd['app']['validexts'])))
-    simplelog(type(confd['app']['validexts']))
-
     if ext_in_list(currext, confd['app']['validexts']):
         FLAGS['VALID_EXT'] = True
         hdr, body = extract_hdr(open(f).read(), currext)
@@ -288,7 +217,33 @@ def analyse_file(f, confd):
     else:
         return FLAGS
     return FLAGS
+
     
+# def import_licenses(licfilepath):
+#     global CurrentRecipie
+#     ### Find a module named licfile, in the currdir
+#     try:
+#         licfile = os.path.basename(licfilepath)
+#         licfiledir = [os.path.dirname(licfilepath),]
+
+#     except ImportError:
+#         raise ImportError("Unable to find an importable recipie named %s in %s" % (licfilepath, str([".",])))
+#     found_module = imp.find_module(licfile, licfiledir)        
+
+#     #import the recipie
+#     try:
+#         filehandle, fpath, desc = found_module
+#         CurrentRecipie = imp.load_module(modname, filehandle, fpath, desc)
+#     finally:
+#         filehandle.close()
+
+# CurrentRecipie = None
+
+
+        
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
+
+
+

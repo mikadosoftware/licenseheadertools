@@ -2,10 +2,10 @@
 #! -*- coding: utf-8 -*-
 
 ###
-# Copyright (c) Rice University 2012
+# Copyright (c) Rice University 2012-13
 # This software is subject to
-# the provisions of the GNU Lesser General
-# Public License Version 2.1 (LGPL).
+# the provisions of the GNU Affero General
+# Public License version 3 (AGPLv3).
 # See LICENCE.txt for details.
 ###
 
@@ -54,5 +54,9 @@ if __name__ == '__main__':
 
         if FLAGS['VALID_EXT'] is True:  # I cpould make different decisions here based on config
             llib.adjust_one_file(f, confd)
-            llib.simplelog("Done %s" % f)
-        
+            llib.simplelog("Done.\n")
+        else:
+            llib.simplelog("Ignored\n")
+
+
+

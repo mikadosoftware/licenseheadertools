@@ -1,5 +1,6 @@
-:docurl: http://license-header-tool.readthedocs.org
+:docurl: http://license-header-tool.mikadosoftware.com
 :desc: Ensure all files hold correct license header
+:license: AGPLv3.  See LICENSE.txt
 
 ===================
 License Header Tool
@@ -27,5 +28,5 @@ yourself.
 I also intend to devlop it as a plugin for flake8
 
 
-python fileheadermaker.py --conf=conf.ini --fldr=/home/pbrian/src/public/Connexions/rhaptos2.repo/rhaptos2/repo
-python fileheadermaker.py --conf=conf.ini --fldr=/home/pbrian/src/public/Connexions/rhaptos2.repo/rhaptos2/repo
+  python fileheadermaker.py --conf=conf.ini --fldr=/home/pbrian/src/public/Connexions/rhaptos2.repo/rhaptos2/repo
+  python fileheadermaker.py --conf=conf.ini --fldr=/home/pbrian/src/public/Connexions/rhaptos2.repo/rhaptos2/repo
