@@ -15,6 +15,19 @@ We want to be able to visit file(s) on a filesystem and
 match their suffixes with known suffixes, and ensure that
 each file has an appropriate OSS license header in it.
 
+How does it work
+----------------
+
+1. Given a fldr, walk the tree
+2. for each file in tree, analyse it
+3. if file matches conf.ini defined set of exts,
+   replace the header of the file with the one
+   named "use_these_headers.py"
+
+(Yeah I did play with importing the recipie via imp. It is feasible
+but PITA for doctests and generally overkill)
+
+
 
 How to run tests
 ----------------
@@ -24,36 +37,11 @@ $ python licensetoollib.py
 
 
 .. todo::
-  0. walk a file system x
-  1. identify a header x
-  2. replace an existing header (!)
+
   1. ignore-file
   2. tie into flake8 extension
-  3. config file
-
-Take cotrol of top header of every file,
-apply the tmpl supplied
-
-SHould handle all file types not just python
-
-Hdr block is, starting at first line in file,
-any and all contiguous lines that begin with a #
-or are blank.
-
-Once we reach a line not meeting that criteria, the hdr block has ended.
-
-useage:
-
-    ### find /my/code -type f \( -iname "*.py" -o -iname "*.js" \) -exec fileheadermaker.py '{}' \;
-    ### git add -i
-        (add the ones you meant to change)
-    ### git commit ...
-    ### git reset --hard
-        (remoes the changes forced on some thiord party .js file in your tree...)
-
 
 """
-
 
 import shutil
 import sys
@@ -62,7 +50,7 @@ import os
 ## I was playing with imp and importing a redcipie provided on command line but it is
 ## awful with doctests and frankly a lot of effort.
 ## So, just change the name of file in this dir
-import headers_rice as CurrentRecipie
+import use_these_headers as CurrentRecipie
 
 
 class LicenseToolError(Exception):
@@ -91,16 +79,19 @@ def extract_hdr(txt, ext):
     return (orig_hdr, body)    
 
 def lineishdr(l, ext):
-    """
-    Determine is a line *at top of a file* is a header, or if its body
 
-    We simply assume that the header of a file is a contiguous block of
-    comment and blank lines.  Anything else triggers "no longer header" flag
+    """Determine is a line *at top of a file* is a header, or if its
+    body
+
+    We simply assume that the header of a file is a contiguous block
+    of comment and blank lines.  Anything else triggers "no longer
+    header" flag
 
 
-    issue: sometimes we have lines of comment that are comment only because previous line is
-           this block style is parseable, but I dont want to wonder off course too much.
-           For the moment only line by line comments are considered headers.
+    issue: sometimes we have lines of comment that are comment only
+           because previous line is this block style is parseable, but
+           I dont want to wonder off course too much.  For the moment
+           only line by line comments are considered headers.
 
 
     >>> lineishdr("#!/usr/local/bin/python", ".py")
@@ -124,7 +115,6 @@ def lineishdr(l, ext):
     
     >>> lineishdr("function foo()", ".py")
     False
-
 
     """
     try:
@@ -218,29 +208,6 @@ def analyse_file(f, confd):
         return FLAGS
     return FLAGS
 
-    
-# def import_licenses(licfilepath):
-#     global CurrentRecipie
-#     ### Find a module named licfile, in the currdir
-#     try:
-#         licfile = os.path.basename(licfilepath)
-#         licfiledir = [os.path.dirname(licfilepath),]
-
-#     except ImportError:
-#         raise ImportError("Unable to find an importable recipie named %s in %s" % (licfilepath, str([".",])))
-#     found_module = imp.find_module(licfile, licfiledir)        
-
-#     #import the recipie
-#     try:
-#         filehandle, fpath, desc = found_module
-#         CurrentRecipie = imp.load_module(modname, filehandle, fpath, desc)
-#     finally:
-#         filehandle.close()
-
-# CurrentRecipie = None
-
-
-        
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
