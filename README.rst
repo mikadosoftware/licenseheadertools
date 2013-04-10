@@ -29,6 +29,16 @@ writing it yourself.
 
 I also intend to devlop it as a plugin for flake8
 
+.. warning::  This is by default aggressive 
+   it captures blank and comment lines at top of file
+   and blows them away in preference for the configured
+   snippet ala above.
+
+I think a more step-through approach might be a better idea
+
+    
+
+
 ::
 
   $ python fileheadermaker.py --conf=conf.ini --fldr=/path/to/code/
