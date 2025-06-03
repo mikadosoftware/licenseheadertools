@@ -17,10 +17,29 @@ def analyse_repo(folder):
     readme = [f for f in repofiles if 'README' in f]
     return (folder, readme)
 
+def extract_tokens(text):
+    """ We have oneline comments in files like 
+    
+    .. onelinedesc: foobar
+    .. somethingelse: foobar
+
+    get foobar
+    """
+    found = {}
+    tokens = ['onelinedesc']
+    for line in text.split('\n'):
+        line = line.strip()
+        for token in tokens:
+            tokenplus = f'.. {token}:'
+            if line.startswith(tokenplus):
+                found['token']= line
+    return found
+
+
 def foo():
     folder = '/home/pbrian/projects'
     folders = [os.path.join(folder,f) for f in os.listdir(folder) if os.path.isdir(os.path.join(folder, f))]
-    
+    folders = [f for f in folders if 'mikado' in f]    
     html = '<table>'
      
     for folder in folders:
@@ -29,7 +48,9 @@ def foo():
             path = paths[0]
             with open(path) as fo:
                 txt = fo.read()
-            html += f'<tr><td>{folder}</td><td>{txt[:100]}</td></tr>'
+                results = extract_tokens(txt)
+
+            html += f'<tr><td>{folder}</td><td>{results}</td></tr>'
     with open("/home/pbrian/foo.html", 'w') as fo:
         fo.write(html+"</table>")
     import webbrowser
